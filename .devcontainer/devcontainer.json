@@ -1,0 +1,25 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {},
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      "settings": {
+        "workbench.colorTheme": "Default Dark Modern"
+      },
+      "extensions": [
+        "github.vscode-github-actions",
+        "GitHub.copilot-chat",
+        "MS-CEINTL.vscode-language-pack-pl",
+        "aaron-bond.better-comments",
+        "usernamehw.errorlens",
+        "donjayamanne.git-extension-pack",
+        "mathematic.vscode-pdf",
+        "myriad-dreamin.tinymist",
+        "nvarner.typst-lsp"
+      ]
+    }
+  }
+}

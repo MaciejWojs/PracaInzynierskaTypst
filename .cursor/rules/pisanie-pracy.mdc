@@ -1,0 +1,16 @@
+---
+description: Zasady merytoryczne i językowe pracy dyplomowej WI ANS
+alwaysApply: true
+---
+
+# Pisanie pracy
+
+Przy pisaniu lub poprawie treści stosuj skill `pisanie-pracy`. Szczegóły cytowań i obiektów są w `.cursor/skills/pisanie-pracy/reference.md`.
+
+- Bezosobowo, po polsku, bez publicystyki i żargonu. Skrót rozwinięty przy pierwszym użyciu.
+- Wstęp nie zawiera celu. Obowiązkowe: „Cel i zakres pracy” oraz „Podsumowanie” z tym, co autor zrobił. Metodyka obowiązkowa w pracy badawczej.
+- Najwyżej trzy stopnie numeracji. Zakaz jednego podrozdziału. Bez kropki na końcu tytułu.
+- Cytowanie harwardzkie w tekście: `(Nowak, 2014)`, cytat ze stroną `(Nowak, 2014, s. 34)`. Przypis dolny nie służy do literatury.
+- Nie wymyślaj źródeł ani wyników. Do bibliografii tylko prace przywołane w tekście.
+- Rysunek, tabela i wzór dopiero po odesłaniu w tekście i z interpretacją. Rozdział nie może być z samych obiektów.
+- Streszczenia i słów kluczowych nie umieszczaj w PDF (idą do ASAP).

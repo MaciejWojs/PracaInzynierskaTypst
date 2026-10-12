@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "cleanup ",
+            "command": "rm main.pdf",
+            "type": "shell",
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build"
+        },
+        {
+            "label": "compile PDF with typst",
+            "command": "typst compile main.typ",
+            "type": "shell",
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build"
+        },
+        {
+            "label": "compile PDF with typst - docker",
+            "command": "docker run --rm --name typst-compile-inzynierka -v $(pwd):/data -w /data ghcr.io/typst/typst compile main.typ",
+            "type": "shell",
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build"
+        }
+    ]
+}
