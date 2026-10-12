@@ -14,11 +14,11 @@
 )
 
 #show: praca.with(
-  tytul: "Tytuł pracy dyplomowej",
-  autor: "Jan Kowalski",
-  kierunek: "Informatyka",
-  nr-albumu: "12345",
-  promotor: "dr inż. Anna Nowak",
+  tytul: "Budowa społecznościowej platformy wideo z obsługą strumieniowania w czasie rzeczywistym",
+  autor: "Maciej Wójs",
+  kierunek: "Informatyka Stosowana",
+  nr-albumu: "33106",
+  promotor: "mgr inż. Bulanda Nikodem",
   wydzial: "Wydział Nauk Inżynieryjnych",
   miejscowosc: "Nowy Sącz",
   rok: "2026",
@@ -30,11 +30,10 @@
 #include "praca/01-przeglad/rozdzial.typ"
 #include "praca/02-cel-i-zakres/rozdzial.typ"
 #include "praca/03-metodyka/rozdzial.typ"
+#include "praca/04-projekt-i-wyniki/rozdzial.typ"
 #include "praca/04-podsumowanie/rozdzial.typ"
 
 #bibliografia()
 #spis-tabel()
 #spis-rysunkow()
 #spis-zalacznikow()
-
-#include "praca/zalaczniki/01-pomiary/zalacznik.typ"
