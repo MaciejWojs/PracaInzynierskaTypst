@@ -1,4 +1,4 @@
-#import "/szablon/template.typ": rysunek, rys
+#import "/szablon/template.typ": tabela, tab
 
 = Przegląd technologii i istniejących rozwiązań
 W tym rozdziale przedstawiono analizę rozwiązań stosowanych przez platformy konkurencyjne. Punkt ciężkości położono na aspekty, które bezpośrednio wpływają na jakość transmisji, skalowalność i stabilność działania: transport wideo, komunikację czasu rzeczywistego, warstwę danych oraz mechanizmy przetwarzania asynchronicznego.
@@ -41,98 +41,85 @@ Konkurencja niemal powszechnie wykorzystuje obiektowe przechowywanie plików kom
 
 W praktyce konkurencyjnej częsty jest przepływ zdarzeniowy, w którym nagranie jest najpierw zapisywane lokalnie przez warstwę multimedialną, a następnie przenoszone do storage obiektowego przez osobny proces roboczy. Takie podejście minimalizuje ryzyko utraty materiału i upraszcza dalszą dystrybucję treści.
 
-== Planowana architektura systemu
-Planowana architektura systemu została zaprojektowana jako zestaw wzajemnie uzupełniających się warstw. Kluczowym celem jest oddzielenie ruchu wejściowego, warstwy aplikacyjnej, serwera transmisji, przechowywania obiektów oraz przetwarzania asynchronicznego. Poniższe diagramy obrazują najważniejsze sekwencje i strumienie danych.
+== Porównanie infrastruktury platform streamingowych
+Porównanie ograniczono do trzech serwisów transmisji na żywo: YouTube, Twitch i Kick. Kryterium nie jest zestaw funkcji społecznościowych, lecz droga obrazu: protokół wejścia, przygotowanie profili dla widza, opisane publicznie opóźnienie oraz to, czy czat jest osobnym kanałem względem strumienia wideo. Zestawienie zebrano w #tab(<platformy-infra>).
 
-=== Wejście żądania do systemu
-W planowanej architekturze systemu kluczową rolę pełni warstwa równoważenia obciążenia, realizowana przez dedykowany serwer pośredniczący. To właśnie ten komponent stanowi centralny punkt wejścia dla wszystkich klientów, przyjmując zarówno żądania HTTP, jak i połączenia WebRTC. Jego zadaniem jest rozdzielanie ruchu do odpowiednich części systemu, zgodnie z typem żądania oraz ścieżką dostępu.
+#tabela(
+  [Infrastruktura publicznie opisana przez platformy transmisji na żywo],
+  table(
+    columns: (1.3fr, 1.6fr, 1.8fr, 1.8fr, 1.5fr),
+    align: (left, left, left, left, left),
+    [Platforma], [Wejście nadawcy], [Dystrybucja], [Opóźnienie], [Czat],
+    [YouTube], [RTMP oraz HLS], [segmenty HLS; tryb ultra-niskiego opóźnienia wyłączany przy wejściu HLS], [poniżej 10 s albo poniżej 5 s dla większości widzów, zależnie od trybu], [osobne API czatu na żywo],
+    [Twitch], [RTMP do serwera ingestu], [wiele profili jakości przygotowywanych po wejściu do sieci], [tryb niskiego opóźnienia włączony domyślnie; liczba sekund niepodana], [osobny protokół względem obrazu],
+    [Kick], [RTMPS, wyłącznie H.264 i stały bitrate], [brak publicznego opisu drabiny transkodowania i sieci dostarczania], [brak publicznego progu w sekundach], [brak publicznego opisu transportu],
+  ),
+  zrodlo: [opracowanie własne na podstawie dokumentacji YouTube, Twitch i centrum pomocy Kick],
+) <platformy-infra>
 
-W przypadku żądań HTTP serwer pośredniczący analizuje ścieżkę i przekazuje ruch:
-- do serwera aplikacyjnego — dla tras niepowiązanych bezpośrednio z zasobami multimedialnymi;
-- do magazynu obiektowego — dla żądań dotyczących plików wideo i zdjęć (na przykład pobieranie lub przesyłanie materiałów);
-- do serwera transmisji — dla żądań związanych z oglądaniem transmisji strumieniowanych (na przykład DASH, ang. _Dynamic Adaptive Streaming over HTTP_, lub HLS).
+YouTube przyjmuje strumień kodera albo playlistę HLS. Przy wejściu HLS opcja ultra-niskiego opóźnienia jest wyłączona, ponieważ materiał jest dzielony na segmenty, a nie wysyłany jako ciągły strumień RTMP #cite(<youtube_hls_ingest>). Dla transmisji interaktywnej serwis publikuje dwa progi: w trybie niskiego opóźnienia większość widzów obserwuje opóźnienie mniejsze niż 10 s, a w trybie ultra-niskim mniejsze niż 5 s. Niższe opóźnienie zwiększa ryzyko buforowania i nie obejmuje rozdzielczości 4K #cite(<youtube_latency>). Czat na żywo jest osobnym zasobem API, niezależnym od ścieżki obrazu #cite(<youtube_live_chat>).
 
-Połączenia WebRTC, inicjowane przez klientów w celu oglądania transmisji na żywo, są kierowane bezpośrednio do serwera transmisji, który obsługuje zarówno przyjmowanie, jak i dystrybucję strumieni. Dodatkowo serwer pośredniczący obsługuje wewnętrzne żądania autoryzacyjne pomiędzy serwerem aplikacyjnym a warstwą pośredniczącą, zapewniając spójność mechanizmów uwierzytelniania i autoryzacji.
+Twitch przyjmuje obraz protokołem RTMP pod adresem serwera ingestu, a klucz transmisji służy do autoryzacji wejścia #cite(<twitch_stream_key>). Po wejściu do sieci materiał źródłowy jest przekształcany tak, aby widz mógł odebrać go na różnych urządzeniach i w różnych profilach jakości #cite(<twitch_broadcast_health>). Tryb niskiego opóźnienia jest na większości kanałów włączony domyślnie i można go wyłączyć; dokumentacja nie podaje liczbowego progu tego trybu #cite(<twitch_low_latency>). Czat jest opisany osobno względem strumienia wideo i opiera się na protokole IRC (ang. _Internet Relay Chat_) #cite(<twitch_chat>).
 
-Takie rozdzielenie ruchu pozwala na:
-- optymalizację ścieżek krytycznych (na przykład streaming wideo nie obciąża warstwy aplikacyjnej);
-- łatwiejsze skalowanie poszczególnych komponentów niezależnie od siebie;
-- uproszczenie zarządzania bezpieczeństwem i autoryzacją na poziomie centralnego punktu wejścia.
+Kick w centrum pomocy określa wymagania kodera: wyłącznie H.264, stały bitrate, przepływność od 1 000 kb/s do 8 000 kb/s, rozdzielczość do 1920×1080 i do 60 klatek na sekundę. Wejście odbywa się po RTMPS #cite(<kick_how_to_stream>) #cite(<kick_obs>). Centrum pomocy nie opisuje drabiny transkodowania, sieci dostarczania treści ani protokołu czatu. Tych braków nie uzupełniano opisami spoza tej dokumentacji.
 
-Podział ten ilustruje diagram na #rys(<loadbalancer>).
+Z tabeli wynika, że YouTube jako jedyny z trzech serwisów publikuje liczbowe progi opóźnienia i wprost wiąże niższe opóźnienie z większym ryzykiem buforowania. Twitch i YouTube rozdzielają drogę nadawcy od przygotowania profili dla widza. Kick dokumentuje wyłącznie warunki przyjęcia strumienia.
 
-#rysunek(
-  image("sources/loadbalancer.png", width: 90%),
-  [Widok planowanego wejścia żądania do systemu z serwerem pośredniczącym],
-) <loadbalancer>
+== Porównanie usług chmurowych
+Porównanie dostawców wykonano pod to samo zadanie: przyjęcie transmisji na żywo, transkodowanie nagrania, magazyn obiektowy, dostarczanie treści oraz kolejka zadań. Kryterium wyboru nie jest ogólna ocena dostawcy, lecz obecność własnej usługi dla każdego z tych pięciu elementów. Zestawienie zawiera #tab(<chmury-uslugi>). Kierunkiem realizacji pozostaje Amazon Web Services, ponieważ w jednym koncie dostarcza własną usługę kodowania na żywo, transkodowania plików, magazynu obiektowego, sieci dostarczania i kolejki.
 
-=== Separacja warstw danych
-Na #rys(<database-sequence>) przedstawiono uproszczoną sekwencję dostępu do danych, która ilustruje podział odpowiedzialności pomiędzy warstwą serwisową, repozytorium, warstwą pośredniczącą pamięci podręcznej oraz bezpośrednim dostępem do bazy danych. Taki model umożliwia oddzielenie logiki biznesowej od szczegółów implementacyjnych trwałego przechowywania oraz wprowadza mechanizmy optymalizujące wydajność.
+#tabela(
+  [Usługi chmurowe przydatne przy budowie platformy transmisji],
+  table(
+    columns: (1.2fr, 1.5fr, 1.5fr, 1.3fr, 1.4fr, 1.3fr),
+    align: left,
+    [Dostawca], [Na żywo], [Nagranie], [Magazyn], [Dostarczanie], [Kolejka],
+    [AWS], [MediaLive; IVS jako wariant zarządzany], [MediaConvert], [S3], [CloudFront], [SQS],
+    [Azure], [brak usługi własnej od 30 czerwca 2024], [brak usługi własnej od 30 czerwca 2024], [Blob Storage], [Front Door], [Service Bus],
+    [Google Cloud], [Live Stream API], [Transcoder API], [Cloud Storage], [Media CDN], [Pub/Sub],
+    [Alibaba Cloud], [ApsaraVideo Live], [ApsaraVideo VOD], [OSS], [CDN przy odtwarzaniu VOD], [Simple Message Queue],
+  ),
+  zrodlo: [opracowanie własne na podstawie dokumentacji AWS, Microsoft, Google Cloud i Alibaba Cloud],
+) <chmury-uslugi>
 
-Proces rozpoczyna się od wywołania metody repozytorium przez warstwę serwisową lub kontroler. Repozytorium w pierwszej kolejności sprawdza, czy żądane dane znajdują się w warstwie pamięci podręcznej (na przykład w pamięci operacyjnej lub zewnętrznym magazynie klucz–wartość). Jeśli dane są dostępne i aktualne, są natychmiast zwracane do klienta, co minimalizuje opóźnienia i odciąża bazę danych.
+=== Amazon Web Services
+AWS Elemental MediaLive koduje wideo na żywo i tworzy wyjścia do emisji oraz strumieniowania #cite(<aws_medialive>). Niskie opóźnienie od kamery do widza dokumentacja opisuje jako połączenie MediaLive z AWS Elemental MediaPackage w wersji 2. Ten sam podręcznik MediaPackage podaje, że zwykły HLS ma zwykle opóźnienie od 18 s do 30 s, a HLS o niskim opóźnieniu może zejść do 3–5 s #cite(<aws_mediapackage_hls>). Amazon Interactive Video Service jest osobną usługą zarządzaną do interaktywnej transmisji na żywo, a nie zamiennikiem transkodowania plików #cite(<aws_ivs>).
 
-W przypadku braku danych w pamięci podręcznej lub ich nieaktualności repozytorium deleguje zapytanie do warstwy dostępu do danych (DAO, ang. _Data Access Object_), która realizuje właściwe zapytanie do bazy danych (na przykład poprzez procedury lub funkcje). Po uzyskaniu wyniku dane są zwracane do repozytorium, które aktualizuje pamięć podręczną i przekazuje wynik do warstwy wywołującej.
+Transkodowanie pliku nagrania należy do AWS Elemental MediaConvert. Usługa nie przyjmuje sygnału na żywo; do kodowania na żywo dokumentacja odsyła do MediaLive #cite(<aws_mediaconvert_faq>). Amazon Elastic Transcoder nie jest narzędziem do wdrożenia: AWS zakończył wsparcie tej usługi 13 listopada 2025 #cite(<aws_elastic_transcoder_eol>).
 
-Takie podejście zapewnia:
-- spójność typów i separację odpowiedzialności pomiędzy warstwami;
-- możliwość testowania i migracji schematów bazy danych;
-- optymalizację wydajności dzięki wykorzystaniu pamięci podręcznej;
-- elastyczność w zarządzaniu polityką odświeżania i walidacji danych.
+Pliki binarne pozostają w Amazon S3 #cite(<s3_api>). Amazon CloudFront dostarcza je z lokalizacji brzegowych jako sieć dostarczania treści #cite(<aws_cloudfront>). Zadania asynchroniczne może przyjąć Amazon SQS (ang. _Simple Queue Service_), czyli zarządzana kolejka komunikatów #cite(<aws_sqs>). Wcześniej opisany RabbitMQ pozostaje wariantem kolejki prowadzonej samodzielnie, a SQS wariantem bez własnego brokera.
 
-#rysunek(
-  image("sources/DatabaseSequence.png", width: 90%),
-  [Sekwencja dostępu do danych przy użyciu warstwy DAO i repozytorium],
-) <database-sequence>
+=== Microsoft Azure
+Microsoft wycofał Azure Media Services 30 czerwca 2024. Po tej dacie konta przestały strumieniować, a kodowanie na żądanie, transmisja na żywo i ochrona treści wymagają rozwiązania partnerskiego albo innej usługi Azure #cite(<azure_ams_retirement>). Własnego następcy o tym samym zakresie dokumentacja nie wskazuje.
 
-=== Sekwencja aktualizacji zasobu obrazu
-Na #rys(<image-asset-update>) przedstawiono szczegółową sekwencję aktualizacji zasobu obrazu, na przykład podczas zmiany zdjęcia profilowego przez użytkownika. Proces ten został zaprojektowany w taki sposób, aby operacje kosztowne obliczeniowo i operacje wejścia-wyjścia były realizowane asynchronicznie, poza ścieżką krytyczną żądania użytkownika.
+Magazyn obiektowy pozostaje dostępny jako Azure Blob Storage i jest przeznaczony do dużych ilości danych bez ustalonego schematu, w tym danych binarnych #cite(<azure_blob>). Dostarczanie treści Microsoft kieruje na Azure Front Door. Klasyczny Azure CDN od Microsoftu jest na ścieżce wycofania do 30 września 2027, a Front Door jest opisywany jako jego następca, z pamięcią podręczną w punktach obecności i równoważeniem ruchu w warstwie aplikacji #cite(<azure_cdn>). Kolejkę i model publikacji z subskrypcjami udostępnia Azure Service Bus #cite(<azure_service_bus>).
 
-Całość rozpoczyna się od żądania HTTP wysłanego przez użytkownika do serwera aplikacyjnego, zawierającego nowe dane obrazu. Serwer, po wstępnej walidacji, nie przetwarza pliku bezpośrednio, lecz umieszcza zadanie w kolejce zadań (na przykład poprzez brokera wiadomości). Zadanie to zawiera niezbędne informacje do dalszego przetwarzania (na przykład identyfikator użytkownika, skrót pliku, metadane).
+=== Google Cloud
+Live Stream API przyjmuje sygnał SRT (ang. _Secure Reliable Transport_) albo RTMP, transkoduje go do HLS lub DASH i zapisuje wynik w zasobniku Cloud Storage. Dokumentacja wskazuje następnie Media CDN jako sposób dostarczenia tego zasobnika do widzów #cite(<gcp_livestream>). Transcoder API dotyczy plików: materiał wgrywa się do Cloud Storage, a wynik transkodowania, w tym HLS i DASH, wraca do magazynu #cite(<gcp_transcoder>). Magazyn obiektowy stanowi Cloud Storage. Zdarzenia między usługami przenosi Pub/Sub #cite(<gcp_pubsub>).
 
-Broker zadań przekazuje komunikat do wyspecjalizowanego procesu roboczego, odpowiedzialnego za operacje na plikach multimedialnych. Proces roboczy wykonuje wymagane przekształcenia, takie jak generowanie różnych rozdzielczości obrazu, kompresję czy walidację formatu. Po zakończeniu przetwarzania nowe pliki są przesyłane do magazynu obiektowego.
+=== Alibaba Cloud
+ApsaraVideo Live nagrywa transmisję do ApsaraVideo VOD. VOD zarządza tak powstałym materiałem, może go transkodować i wystawia odtwarzanie przyspieszane przez CDN #cite(<alibaba_live_vod>). Magazyn VOD jest oparty na Object Storage Service; można użyć zasobnika zarządzanego przez VOD albo własnego zasobnika OSS #cite(<alibaba_vod_storage>). Kolejkę komunikatów udostępnia Simple Message Queue, z modelem kolejki dla punktu do punktu oraz tematu dla publikacji i subskrypcji #cite(<alibaba_mns>).
 
-Po pomyślnym zakończeniu operacji proces roboczy informuje brokera o statusie zadania, a ten przekazuje aktualizację do serwera aplikacyjnego. W rezultacie możliwa jest aktualizacja indeksów metadanych oraz zapisanie nowego adresu pliku w bazie danych.
+=== Wniosek z porównania dostawców
+Trzech dostawców, AWS, Google Cloud i Alibaba Cloud, ma własną usługę transmisji na żywo i własną usługę transkodowania nagrań. Azure po 30 czerwca 2024 nie ma już własnej usługi medialnej o tym zakresie, więc ścieżka obrazu wymagałaby produktu partnera. Przy przyjętym kryterium, czyli komplecie usług własnych i jednym kierunku wdrożenia, do dalszych rozdziałów przyjmuje się AWS. Porównanie nie oznacza budowy globalnej sieci dostarczania w ramach tej pracy. CloudFront pozostaje tu usługą odniesienia, nie zakresem implementacji.
 
-Takie podejście zapewnia:
-- oddzielenie ścieżki krytycznej żądania użytkownika od operacji kosztownych obliczeniowo i operacji wejścia-wyjścia;
-- wysoką responsywność API nawet przy dużym obciążeniu;
-- możliwość skalowania procesów roboczych niezależnie od serwera aplikacyjnego;
-- spójność i aktualność indeksów metadanych dzięki asynchronicznej obsłudze statusów zadań.
+== Usługi wspomagające wdrożenie
+Poza ścieżką obrazu porównano narzędzia, które porządkują wdrożenie, przekazywanie zadań i obserwację systemu. Nie wchodzą one do zakresu implementacji opisanego w rozdziale o celu pracy. Służą do uzasadnienia, które klasy mechanizmów są potrzebne, jeśli platforma ma być powtarzalna w utrzymaniu.
 
-#rysunek(
-  image("sources/ImageAssetUpdate.png", width: 90%),
-  [Sekwencja aktualizacji zasobu obrazu, łącznie z walidacją i zapisem do magazynu],
-) <image-asset-update>
+=== Infrastruktura jako kod i potok dostarczania
+Terraform opisuje infrastrukturę jako kod: stan środowiska powstaje z plików konfiguracyjnych, a nie z ręcznej sekwencji w konsoli #cite(<terraform_intro>). Jenkins automatyzuje budowanie i dostarczanie oprogramowania w potoku ciągłej integracji #cite(<jenkins_intro>). Oba narzędzia adresują inny problem niż MediaLive czy S3. Terraform dotyczy zasobów, Jenkins dotyczy wydań aplikacji. Pełna automatyzacja produkcyjnego potoku pozostaje poza zakresem pracy.
 
-=== Sekwencja zakończenia streamowania
-Na #rys(<stream-ended>) przedstawiono szczegółową sekwencję obsługi zakończenia transmisji na żywo oraz przetwarzania nagranego materiału wideo. Proces ten został zaprojektowany w sposób asynchroniczny, aby zapewnić wysoką wydajność i spójność systemu przy równoległej obsłudze wielu transmisji.
+=== Kolejki komunikatów
+RabbitMQ, wskazany wcześniej przy zadaniach ciężkich, rozdziela nadawców i odbiorców przez wymiany i kolejki w modelu AMQP #cite(<amqp_model>). Apache Kafka jest systemem strumieni zdarzeń: producenci zapisują rekordy do tematów, a grupy konsumentów czytają te tematy niezależnie #cite(<kafka_intro>). Dla zadań o zakończonym czasie życia, takich jak przetworzenie obrazu albo przeniesienie nagrania, wystarcza kolejka zadań. Kafka jest zasadna tam, gdzie wielu odbiorców czyta ten sam, uporządkowany dziennik zdarzeń. W tym zestawieniu nie zastępuje ona RabbitMQ ani SQS, tylko pokazuje drugi model przekazywania komunikatów.
 
-Po zakończeniu transmisji serwer strumieniowania informuje serwer aplikacyjny o gotowości pliku wideo do dalszego przetwarzania. Serwer aplikacyjny, zamiast wykonywać operacje bezpośrednio, umieszcza zadanie w kolejce zadań (na przykład poprzez brokera wiadomości), przekazując niezbędne informacje o zakończonym streamie (identyfikator, lokalizacja pliku).
+=== Obserwowalność oraz identyfikacja żądań
+Prometheus zbiera szeregi czasowe metryk przez pobieranie ich z punktów końcowych #cite(<prometheus_overview>). Grafana składa te szeregi w panele #cite(<grafana_intro>). Loki indeksuje logi po etykietach, a nie po pełnej treści każdej linii #cite(<loki_overview>). Zabbix jest osobnym systemem monitorowania, opartym na agentach i własnym modelu zbierania danych #cite(<zabbix_about>). Pierwsza trójka rozdziela metryki, prezentację i logi. Zabbix łączy zbieranie i alarmowanie w jednym produkcie. Do mierników z rozdziału o celu wystarczają metryki opóźnienia, odsetka błędów i liczby sesji, niezależnie od tego, który z tych produktów je zbierze.
 
-Broker zadań przekazuje komunikat do procesu roboczego, który pobiera plik wideo z serwera strumieniowania, wykonuje ewentualne przetwarzanie (na przykład konwersję, kompresję) i przesyła gotowy plik do magazynu obiektowego. Po zakończeniu operacji proces roboczy usuwa oryginalny plik z serwera transmisji, zwalniając zasoby dyskowe.
-
-Po pomyślnym zakończeniu zadania proces roboczy informuje brokera, a ten przekazuje aktualizację do serwera aplikacyjnego. W rezultacie możliwa jest aktualizacja stanu systemu oraz zapisanie nowego adresu pliku w bazie danych, co umożliwia dalszą dystrybucję materiału.
-
-Takie podejście zapewnia:
-- asynchroniczne i niezawodne przetwarzanie nagrań;
-- automatyczne zwalnianie zasobów po zakończeniu transmisji;
-- spójność stanu systemu nawet przy wielu równoległych operacjach;
-- możliwość dalszego skalowania procesów roboczych niezależnie od serwera aplikacyjnego.
-
-#rysunek(
-  image("sources/StreamEnded.png", width: 90%),
-  [Sekwencja zakończenia streamowania i zwalniania zasobów],
-) <stream-ended>
-
-=== Ogólny schemat przepływu architektury
-Na #rys(<flowchart>) przedstawiono ogólny schemat architektury. Diagram ilustruje główne komponenty, kierunki przepływu danych oraz punkt styku pomiędzy warstwą czasu rzeczywistego, warstwą aplikacyjną i magazynem obiektowym. Taki model ułatwia analizę punktów skalowania oraz identyfikację potencjalnych wąskich gardeł.
-
-#rysunek(
-  image("sources/flowchart.png", width: 90%),
-  [Ogólny schemat planowanej architektury systemu],
-) <flowchart>
+Powiązanie logów jednej operacji umożliwia nagłówek kontekstu śledzenia `traceparent`, określony przez W3C (ang. _World Wide Web Consortium_) #cite(<w3c_trace_context>). Ponowienie tego samego żądania zapisu bez zdublowania skutku opisuje nagłówek `Idempotency-Key` w projekcie grupy roboczej HTTPAPI #cite(<ietf_idempotency>). Oba mechanizmy są praktyką interfejsu HTTP, a nie usługą chmurową.
 
 == Wnioski z analizy konkurencji
 Przegląd rozwiązań rynkowych wskazuje, że skuteczne platformy nie opierają się na jednym uniwersalnym mechanizmie, lecz łączą wyspecjalizowane komponenty: protokoły niskiej latencji dla transmisji na żywo, adaptacyjną dystrybucję HTTP dla skali masowej, odrębne kanały komunikacji społecznościowej, warstwę danych w pamięci operacyjnej dla stanu ulotnego, broker kolejek dla zadań ciężkich oraz magazyn obiektowy dla zasobów binarnych.
+
+YouTube i Twitch potwierdzają rozdział wejścia nadawcy od dystrybucji do widza. Kick dokumentuje warunki wejścia, ale nie publikuje opisu dalszej drogi obrazu. Z dostawców chmury komplet własnych usług pod przyjęte kryteria mają AWS, Google Cloud i Alibaba Cloud. Do realizacji wybrano AWS, z MediaLive albo IVS po stronie transmisji na żywo, MediaConvert po stronie nagrań oraz S3 i kolejką po stronie plików i zadań. Elastic Transcoder nie wchodzi do tego zestawu, bo wsparcie usługi zakończono.
 
 Analiza ta potwierdza, że przewagę konkurencyjną buduje nie pojedyncza technologia, ale spójna integracja wielu usług wraz z mechanizmami monitoringu, automatyzacji i skalowania.
