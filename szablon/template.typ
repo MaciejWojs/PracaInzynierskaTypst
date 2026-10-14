@@ -42,57 +42,49 @@
   wydzial,
   miejscowosc,
   rok,
+  pogrubienie-autora: true,
+  pogrubienie-kierunku: true,
+  pogrubienie-nr-albumu: true,
 ) = {
+  // Elementy ustawia się po linii bazowej (w pkt od górnej krawędzi strony),
+  // co odpowiada wzorowi. Wiersz ma wysokość 1 em: 0,8 em nad linią bazową.
   set par(leading: 0.2em, spacing: 0.2em, first-line-indent: 0pt, justify: false)
-  set text(fill: black, weight: "bold", hyphenate: false)
+  set text(fill: black, weight: "bold", hyphenate: false, top-edge: 0.8em, bottom-edge: -0.2em)
 
-  align(center)[
-    #v(0.6cm)
-    #text(18pt)[AKADEMIA NAUK STOSOWANYCH\ W NOWYM SĄCZU]
+  let gora-strony = 2cm
+  let ustaw(baza, rozmiar, tresc, wyrownanie: center, dx: 0pt, krok: none, pogrubienie: true) = place(
+    top + left,
+    dx: dx,
+    dy: baza - 0.8 * rozmiar - gora-strony,
+    block(width: 100% - dx, {
+      set par(leading: krok - rozmiar) if krok != none
+      align(wyrownanie, text(rozmiar, weight: if pogrubienie { "bold" } else { "regular" }, tresc))
+    }),
+  )
 
-    #v(1.15cm)
-    #text(18pt)[#upper(wydzial)]
+  ustaw(129.05pt, 18pt, [AKADEMIA NAUK STOSOWANYCH\ W NOWYM SĄCZU], krok: 22.35pt)
+  ustaw(203.45pt, 18pt, upper(wydzial))
+  ustaw(267.45pt, 16pt, [PRACA DYPLOMOWA])
+  ustaw(333.05pt, 16pt, upper(tytul), krok: 20.4pt)
 
-    #v(1.7cm)
-    #text(16pt)[PRACA DYPLOMOWA]
+  // Blok autora zaczyna się na wspólnej lewej krawędzi, 11 pkt dla etykiet.
+  let lewa-autor = 285.2pt - 2.5cm
+  ustaw(497.85pt, 14pt, [#text(weight: "bold")[Autor:] #text(weight: if pogrubienie-autora { "bold" } else { "regular" })[#autor]], wyrownanie: left, dx: lewa-autor)
+  ustaw(513.85pt, 11pt, [#text(weight: "bold")[Kierunek:] #text(weight: if pogrubienie-kierunku { "bold" } else { "regular" })[#kierunek]], wyrownanie: left, dx: lewa-autor)
+  ustaw(529.85pt, 11pt, [#text(weight: "bold")[Nr albumu:] #text(weight: if pogrubienie-nr-albumu { "bold" } else { "regular" })[#nr-albumu]], wyrownanie: left, dx: lewa-autor)
 
-    #v(1.35cm)
-    #text(16pt)[#upper(tytul)]
+  ustaw(601.35pt, 11pt, [Promotor: #promotor])
 
-    #v(1fr)
+  ustaw(
+    676.75pt,
+    11pt,
+    [Akceptacja promotora: #("…" * 20)],
+    wyrownanie: left,
+    dx: 152.8pt - 2.5cm,
+  )
+  ustaw(687.1pt, 8pt, text(weight: "regular")[data i podpis], wyrownanie: left, dx: 323.4pt - 2.5cm)
 
-    #align(center)[
-      #block(width: auto)[
-        #set align(left)
-        #set par(leading: 0.55em, spacing: 0.15em)
-        #text(14pt)[Autor: #autor] \
-        #text(12pt)[Kierunek: #kierunek] \
-        #text(12pt)[Nr albumu: #nr-albumu]
-      ]
-    ]
-
-    #v(1.15cm)
-    #text(12pt)[Promotor: #promotor]
-
-    #v(1.25cm)
-    #align(center)[
-      #grid(
-        columns: (auto, 7.4cm),
-        column-gutter: 0.45em,
-        align: (right + bottom, center),
-        text(12pt)[Akceptacja promotora:],
-        [
-          #line(length: 100%, stroke: (thickness: 0.6pt, dash: "dotted"))
-          #v(2pt)
-          #text(8pt, weight: "regular")[data i podpis]
-        ],
-      )
-    ]
-
-    #v(1fr)
-    #text(14pt)[#upper(miejscowosc) #rok]
-    #v(0.2cm)
-  ]
+  ustaw(760.3pt, 14pt, [#upper(miejscowosc) #rok])
 }
 
 // --- rysunki, tabele, wzory, cytaty ---------------------------------------
@@ -206,6 +198,10 @@
   wydzial: "Wydział Nauk Inżynieryjnych",
   miejscowosc: "Nowy Sącz",
   rok: "2026",
+  // Pogrubienie wartości (etykieta „Autor:” itd. jest zawsze pogrubiona), domyślnie wyłączone.
+  pogrubienie-autora: false,
+  pogrubienie-kierunku: false,
+  pogrubienie-nr-albumu: false,
   body,
 ) = {
   set document(title: tytul, author: autor)
@@ -225,7 +221,7 @@
   set page(
     paper: "a4",
     binding: left,
-    margin: (inside: 3cm, outside: 2cm, top: 2cm, bottom: 2cm),
+    margin: (x: 2.5cm, y: 2cm),
     header: none,
     footer: none,
     numbering: none,
@@ -240,11 +236,15 @@
     wydzial,
     miejscowosc,
     str(rok),
+    pogrubienie-autora: pogrubienie-autora,
+    pogrubienie-kierunku: pogrubienie-kierunku,
+    pogrubienie-nr-albumu: pogrubienie-nr-albumu,
   )
   pagebreak()
   pagebreak()
 
   set page(
+    margin: (inside: 3cm, outside: 2cm, top: 2cm, bottom: 2cm),
     footer: context {
       set text(size: 10pt, weight: "regular")
       align(right, counter(page).display("1"))
