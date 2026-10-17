@@ -1,8 +1,12 @@
-// Szablon pracy dyplomowej
+// Szablon pracy inżynierskiej
 // Wydział Nauk Inżynieryjnych, Akademia Nauk Stosowanych w Nowym Sączu.
 //
-// Układ i formatowanie według „Zasad pisania prac dyplomowych” (2026)
-// oraz wzoru strony tytułowej (załącznik B / wzór 2022–2023).
+// Układ i formatowanie według „Zasad pisania prac dyplomowych” (2026), rozdz. V.2
+// oraz wzoru strony tytułowej (załącznik B).
+//
+// Kolejność katalogów w praca/: 00-wstep → 01-przeglad → 02-cel-i-zakres →
+// 03-metodyka → 04-projekt-i-wyniki → 05-podsumowanie → (bibliografia w main) →
+// 06-zalaczniki.
 //
 // Czcionka wymagana: Times New Roman. Gdy nie jest zainstalowana,
 // używana jest Liberation Serif (zgodna metrycznie).
@@ -187,6 +191,12 @@
 #let spis-rysunkow() = _spis([Spis rysunków], figure.where(kind: image))
 #let spis-zalacznikow() = _spis([Spis załączników], figure.where(kind: "zalacznik"))
 
+// Wstęp i inne części bez numeru rozdziału (w spisie treści z tytułem).
+#let wstep(tresc) = {
+  heading(level: 1, numbering: none, outlined: true)[Wstęp]
+  tresc
+}
+
 // --- dokument --------------------------------------------------------------
 
 #let praca(
@@ -259,7 +269,7 @@
     first-line-indent: (amount: 0.75cm, all: true),
     linebreaks: "optimized",
   )
-  set heading(numbering: "1.1.1")
+  set heading(numbering: "1.1.1.")
   set outline(depth: 3, indent: auto)
   set figure(numbering: "1", gap: 0.6em)
   set figure.caption(separator: [. ])

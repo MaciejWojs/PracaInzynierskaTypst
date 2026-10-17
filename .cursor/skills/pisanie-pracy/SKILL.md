@@ -1,38 +1,50 @@
 ---
 name: pisanie-pracy
 description: >-
-  Redaguje pracę dyplomową Wydziału Nauk Inżynieryjnych ANS w Nowym Sączu
+  Redaguje pracę inżynierską Wydziału Nauk Inżynieryjnych ANS w Nowym Sączu
   według zasad wydziału (2026) i wzoru strony tytułowej. Używaj przy pisaniu
-  lub poprawie rozdziałów, wstępu, celu i zakresu, metodyki, podsumowania,
-  bibliografii, cytowań harwardzkich, rysunków, tabel, wzorów oraz plików
-  praca/**/*.typ i praca/literatura.bib.
+  lub poprawie rozdziałów, wstępu, celu i zakresu, metodyki projektu,
+  projektu i implementacji, podsumowania, bibliografii, cytowań harwardzkich,
+  rysunków, tabel, wzorów oraz plików praca/**/*.typ i praca/literatura.bib.
 ---
 
-# Pisanie pracy dyplomowej WI ANS
+# Pisanie pracy inżynierskiej WI ANS
 
 Skład jest w szablonie. Tu obowiązuje treść i redakcja. Szczegóły cytowań, rysunków i tabel: [reference.md](reference.md).
 
 ## Zanim napiszesz
 
-1. Ustal, czy to praca inżynierska (projekt + implementacja), czy magisterska (badanie, nie sam przegląd teorii). Gdy z tekstu tego nie widać, nie zgaduj rodzaju wymogów.
+1. To repozytorium jest pod **pracę inżynierską** (projekt + implementacja, IV.2 i V.2 poradnika 2026).
 2. Przeczytaj sąsiednie rozdziały i nie powtarzaj tych samych treści.
-3. Nowy rozdział: katalog `praca/<nazwa>/` z `rozdzial.typ` i `sources/`, potem `#include` w `main.typ`.
+3. Nowy rozdział: katalog `praca/<NN-nazwa>/` z plikiem `<NN-nazwa>.typ` i `sources/` (np. `01-przeglad/01-przeglad.typ`), potem `#include` w `main.typ`. Załącznik: `06-zalaczniki/<NN-nazwa>/<NN-nazwa>.typ`.
 4. Nie dopisuj streszczenia ani słów kluczowych do PDF. Idą do ASAP.
 
-## Układ, którego nie wolno złamać
+## Układ treści (inżynierska)
 
-Kolejność: strona tytułowa, spis treści, treść, bibliografia, spis tabel, spis rysunków, spis załączników, załączniki.
+Kolejność w `main.typ`: strona tytułowa, spis treści, treść, bibliografia, spis tabel, spis rysunków, spis załączników, załączniki.
 
-- **Wstęp** bez numeru: obszar pracy i problemy. Cel jest w osobnym rozdziale.
+| Element poradnika (IV.2 / V.2) | Katalog w `praca/` |
+| --- | --- |
+| Wstęp (obszar, problemy — bez celu i bez genezy szczegółowej) | `00-wstep/` — `#wstep[...]` |
+| Przegląd rozwiązań i technologii (w tym kryteria oceny u innych) | `01-przeglad/` |
+| Cel i zakres pracy (obowiązkowy; geneza, cel, zakres, kryteria) | `02-cel-i-zakres/` |
+| Metodyka projektu i weryfikacji (narzędzia, pomiar kryteriów, odtwarzalność) | `03-metodyka/` |
+| Projekt, implementacja i weryfikacja, wkład własny | `04-projekt-i-wyniki/` |
+| Podsumowanie (obowiązkowe; co zrobiono) | `05-podsumowanie/` |
+| Załączniki | `06-zalaczniki/<NN-nazwa>/<NN-nazwa>.typ` |
+
+Rozdział „Metodyka badań” z poradnika jest obowiązkowy w pracy **badawczej** (typowa magisterska), nie w inżynierskiej. W inżynierskiej uzasadnia się metody, techniki i narzędzia projektu.
+
+- **Wstęp** bez numeru rozdziału.
 - **Cel i zakres pracy** oraz **Podsumowanie** są obowiązkowe.
-- **Metodyka badań** jest obowiązkowa w pracy badawczej.
-- Numeracja arabska, najwyżej trzy stopnie (`1`, `1.1`, `1.1.1`). Bez kropki na końcu tytułu.
+- Numeracja arabska do trzech stopni (`1.`, `1.1.`, `1.1.1.` w szablonie). Bez kropki na końcu **tytułu** rozdziału.
 - Zakaz jednego podrozdziału w rozdziale. Albo co najmniej dwa, albo żaden.
 - Rozdział ma mieć kilka stron i nie może składać się z samych rysunków, tabel albo wzorów.
-- W podsumowaniu wprost zapisz, co autor zrobił. Wnioski tylko z treści pracy.
+- W podsumowaniu wprost zapisz, co autor zrobił, ocenę realizacji celu, uproszczony opis zaprojektowanego systemu oraz wytyczne do dalszych działań (IV.2, praca projektowa). Wnioski tylko z treści pracy.
 
-Inżynierska: geneza, cel, przegląd metod i narzędzi, opis projektu i implementacji z wkładem własnym, działanie rozwiązania, krytyczne podsumowanie.
-Magisterska: problem badawczy, analiza literatury (nie streszczenia książek), metody, rozwiązanie albo przegląd z oceną użyteczności, część praktyczna. Nie może być wyłącznie teoretyczna.
+Treść merytoryczna inżynierska: geneza w rozdziale celu, przegląd metod i narzędzi, opis projektu i implementacji z wkładem własnym, prezentacja działania rozwiązania, krytyczne podsumowanie.
+
+Kryteria oceny systemu należy najpierw zbadać u innych (przegląd, dokumentacja platform), następnie wyznaczyć progi w „Cel i zakres pracy”, opisać pomiar w metodyce i zestawić wyniki w rozdziale projektowym. Przy testach obciążeniowych przyjąć i uzasadnić minimalną liczbę jednoczesnych nadawców i odbiorców (założenie projektowe do uzgodnienia z promotorem).
 
 ## Język
 
@@ -53,6 +65,7 @@ Styl harwardzki w tekście, nie w przypisie. Przypis dolny tylko na dygresję.
 - Cytat krótszy niż 40 słów w „cudzysłowie”. Dłuższy: `#cytat[...]`, bez cudzysłowu. Cytaty dosłowne poniżej 5% pracy.
 - W `praca/literatura.bib` tylko pozycje przywołane w tekście. Nie cytuj prac niepublicznych (magisteria, ekspertyzy, przekazy ustne).
 - Nie wymyślaj źródeł, stron ani danych. Brak pozycji zgłoś wprost.
+- **Weryfikacja ręczna:** każdy wpis w `literatura.bib` i `netografia.bib` sprawdź pod kątem autora, roku, tytułu, stron i dostępności; treść przy każdym `#cite` porównaj ze źródłem. Przed oddaniem przejdź bibliografię i odsyłacze w obie strony; adresy WWW otwórz w przeglądarce i uzupełnij datę dostępu.
 
 ## Obiekty
 
@@ -70,4 +83,6 @@ Szablony zapisów bibliograficznych i reguły liczb, jednostek oraz komórek tab
 - [ ] Każdy rysunek i tabela ma wcześniejsze odesłanie i komentarz.
 - [ ] Każde twierdzenie z literatury ma odsyłacz, a klucz jest w `praca/literatura.bib`.
 - [ ] Brak jednego osieroconego podrozdziału i braku poziomu głębszego niż 1.1.1.
-- [ ] Podsumowanie, jeśli je ruszasz, mówi wprost, co zostało zrobione.
+- [ ] W rozdziale projektowym widać wkład własny (projekt, implementacja, weryfikacja).
+- [ ] Podsumowanie mówi wprost, co zostało zrobione, zawiera uproszczony opis systemu i wytyczne na przyszłość.
+- [ ] Kryteria z przeglądu widać w celu, metodyce i wynikach; cytowania zweryfikowane ręcznie.

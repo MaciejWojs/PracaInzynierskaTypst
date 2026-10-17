@@ -1,5 +1,5 @@
 ---
-description: Zasady merytoryczne i językowe pracy dyplomowej WI ANS
+description: Zasady merytoryczne i językowe pracy inżynierskiej WI ANS
 alwaysApply: true
 ---
 
@@ -8,8 +8,11 @@ alwaysApply: true
 Przy pisaniu lub poprawie treści stosuj skill `pisanie-pracy`. Szczegóły cytowań i obiektów są w `.cursor/skills/pisanie-pracy/reference.md`.
 
 - Bezosobowo, po polsku, bez publicystyki i żargonu. Skrót rozwinięty przy pierwszym użyciu.
-- Wstęp nie zawiera celu. Obowiązkowe: „Cel i zakres pracy” oraz „Podsumowanie” z tym, co autor zrobił. Metodyka obowiązkowa w pracy badawczej.
-- Najwyżej trzy stopnie numeracji. Zakaz jednego podrozdziału. Bez kropki na końcu tytułu.
+- Praca inżynierska (IV.2): geneza w „Cel i zakres pracy”, przegląd rozwiązań, implementacja z wkładem własnym, działanie systemu, krytyczne podsumowanie z opisem tego, co autor zrobił, uproszczonym opisem systemu i wytycznymi na przyszłość.
+- Wstęp: obszar i problemy, bez celu i bez szczegółowej genezy. Obowiązkowe: „Cel i zakres pracy” oraz „Podsumowanie”. „Metodyka badań” magisterska — tylko w pracy badawczej; w inżynierskiej metodyka projektu i narzędzi.
+- Kryteria oceny: najpierw u innych (przegląd), potem progi w celu, pomiar w metodyce, wyniki w rozdziale projektowym; minimalna liczba nadawców i odbiorców w testach — uzasadnione założenie.
+- Cytowania weryfikuj ręcznie (bibliografia ↔ tekst ↔ treść źródła; WWW z datą dostępu).
+- Najwyżej trzy stopnie numeracji (`1.`, `1.1.`, `1.1.1.` w szablonie). Zakaz jednego podrozdziału. Bez kropki na końcu tytułu rozdziału.
 - Cytowanie harwardzkie w tekście: `(Nowak, 2014)`, cytat ze stroną `(Nowak, 2014, s. 34)`. Przypis dolny nie służy do literatury.
 - Nie wymyślaj źródeł ani wyników. Do bibliografii tylko prace przywołane w tekście.
 - Rysunek, tabela i wzór dopiero po odesłaniu w tekście i z interpretacją. Rozdział nie może być z samych obiektów.

@@ -1,8 +1,12 @@
-// Praca dyplomowa — plik główny.
+// Praca inżynierska WI ANS — plik główny.
 // Kompilacja: typst compile main.typ
 //
-// Uzupełnij dane na stronie tytułowej, potem edytuj rozdziały w praca/.
-// Każdy rozdział: praca/<rozdzial>/rozdzial.typ oraz praca/<rozdzial>/sources/.
+// Układ treści (poradnik 2026, V.2): 00-wstep → 01-przeglad → 02-cel-i-zakres →
+// 03-metodyka → 04-projekt-i-wyniki → 05-podsumowanie → bibliografia → spisy →
+// 06-zalaczniki.
+//
+// Każdy rozdział: praca/<NN-nazwa>/<NN-nazwa>.typ oraz praca/<NN-nazwa>/sources/.
+// Załącznik: praca/06-zalaczniki/<NN-nazwa>/<NN-nazwa>.typ.
 // Obraz z rozdziału: #rysunek(image("sources/nazwa.png", width: 12cm), [Tytuł]) <etykieta>
 // Ścieżka sources/ jest liczona od pliku rozdziału, nie od main.typ.
 // Szablon składu jest w szablon/, bibliografia w praca/literatura.bib.
@@ -26,14 +30,16 @@
 
 #spis-tresci()
 
-#include "praca/wstep/rozdzial.typ"
-#include "praca/01-przeglad/rozdzial.typ"
-#include "praca/02-cel-i-zakres/rozdzial.typ"
-#include "praca/03-metodyka/rozdzial.typ"
-#include "praca/04-projekt-i-wyniki/rozdzial.typ"
-#include "praca/04-podsumowanie/rozdzial.typ"
+#include "praca/00-wstep/00-wstep.typ"
+#include "praca/01-przeglad/01-przeglad.typ"
+#include "praca/02-cel-i-zakres/02-cel-i-zakres.typ"
+#include "praca/03-metodyka/03-metodyka.typ"
+#include "praca/04-projekt-i-wyniki/04-projekt-i-wyniki.typ"
+#include "praca/05-podsumowanie/05-podsumowanie.typ"
 
 #bibliografia()
 #spis-tabel()
 #spis-rysunkow()
 #spis-zalacznikow()
+
+#include "praca/06-zalaczniki/01-pomiary/01-pomiary.typ"

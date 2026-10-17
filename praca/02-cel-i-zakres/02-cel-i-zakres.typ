@@ -3,6 +3,9 @@
 = Cel i zakres pracy
 Na podstawie analizy rozwiązań rynkowych oraz technologii wykorzystywanych we współczesnych platformach streamingowych określono cel pracy i zakres działań projektowo-implementacyjnych. W rozdziale doprecyzowano, jakie elementy systemu zostaną zrealizowane, jakie ograniczenia przyjęto oraz według jakich kryteriów będzie oceniany końcowy rezultat.
 
+== Geneza pracy
+Temat pracy wynika z obserwacji, że użytkownicy oczekują na platformach społecznościowych jednoczesnej transmisji wideo na żywo, interakcji w czacie oraz stabilnego odtwarzania na różnych urządzeniach. W dokumentacji dużych serwisów widać rozdzielenie ścieżki obrazu od kanału czatu oraz publikowanie progów opóźnienia w trybach interaktywnych #cite(<youtube_latency>) #cite(<twitch_low_latency>). Budowa własnej platformy wymaga połączenia warstwy aplikacyjnej z usługami multimedialnymi, mechanizmami czasu rzeczywistego i przetwarzaniem asynchronicznym, co stanowi problem inżynierski o charakterze projektowym i implementacyjnym.
+
 == Cel pracy
 Celem pracy jest zaprojektowanie i zaimplementowanie społecznościowej platformy wideo oraz wykazanie, że działa. Platforma ma umożliwić transmisję na żywo, odbiór obrazu i dźwięku, czat, reakcje, powiadomienia i zapis nagrania. Do celu należy też zebranie mierników z #tab(<mierniki-celu>). Usługa wystawia metryki, Prometheus je pobiera, a Grafana składa z nich panele testu #cite(<prometheus_overview>) #cite(<grafana_intro>).
 
@@ -64,6 +67,8 @@ Warstwa kliencka i serwerowa aplikacji pozostaje przy technologiach webowych. Tr
 W celu potwierdzenia poprawności działania systemu przewidziano realizację testów w dwóch głównych obszarach: funkcjonalnym oraz wydajnościowym. Testy funkcjonalne posłużą do weryfikacji poprawności scenariuszy użytkownika i oceny, czy najważniejsze funkcje platformy działają zgodnie z założeniami. Z kolei testy wydajnościowe pozwolą ocenić zachowanie systemu przy rosnącym obciążeniu oraz wskazać potencjalne ograniczenia projektowe.
 
 W zakresie testów funkcjonalnych uwzględnione zostaną między innymi proces logowania, uruchamianie transmisji, odbiór obrazu i dźwięku, działanie czatu, publikacja reakcji oraz zapis materiału VOD. Testy wydajnościowe obejmą analizę czasu odpowiedzi API, opóźnień dostarczania zdarzeń czasu rzeczywistego oraz stabilności przy zwiększonej liczbie użytkowników. Szeregi tych mierników pobiera Prometheus, a Grafana pokazuje je w panelach testu obciążenia.
+
+Jako założenie projektowe do uzgodnienia z promotorem przyjęto minimalny skład obciążenia w teście wydajnościowym: co najmniej trzech jednoczesnych nadawców transmisji na żywo oraz co najmniej trzydziestu jednoczesnych odbiorców łącznie, rozłożonych na te transmisje. Drugi profil obciążenia zwiększa liczbę odbiorców przy tej samej liczbie nadawców. Wartości wybrane są poniżej skali komercyjnych platform, lecz wystarczają do wstępnej oceny skalowania warstwy aplikacyjnej i kanałów czasu rzeczywistego w ramach zakresu pracy. Szczegóły scenariuszy i powtarzalności pomiaru opisano w rozdziale metodyki.
 
 == Zakres poza pracą
 Poza celem pozostają GitOps, Terraform, Loki i Jenkins. GitOps utrzymuje deklarowany stan środowiska przez automatyczne pobieranie wersji z repozytorium #cite(<opengitops>). Terraform opisuje infrastrukturę jako kod, a Jenkins automatyzuje potok wydań #cite(<terraform_intro>) #cite(<jenkins_intro>). Loki zostaje przy logach. Te cztery pozycje nie rozstrzygają o spełnieniu celu. Poza zakresem zostają też budowa globalnej infrastruktury CDN (ang. _Content Delivery Network_), wdrożenie komercyjnych mechanizmów monetyzacji, przygotowanie natywnych aplikacji mobilnych oraz formalna certyfikacja bezpieczeństwa systemu.

@@ -117,6 +117,11 @@ Prometheus zbiera szeregi czasowe metryk przez pobieranie ich z punktów końcow
 
 Powiązanie logów jednej operacji umożliwia nagłówek kontekstu śledzenia `traceparent`, określony przez W3C (ang. _World Wide Web Consortium_) #cite(<w3c_trace_context>). Ponowienie tego samego żądania zapisu bez zdublowania skutku opisuje nagłówek `Idempotency-Key` w projekcie grupy roboczej HTTPAPI #cite(<ietf_idempotency>). Oba mechanizmy są praktyką interfejsu HTTP, a nie usługą chmurową.
 
+== Kryteria oceny platform i systemów strumieniowania
+W przeglądzie przyjęto wymiary oceny zgodne z praktyką opisywaną w dokumentacji platform i literaturze o systemach czasu rzeczywistego. Obejmują one: protokół i ścieżkę wejścia nadawcy oraz dystrybucję do widza; opóźnienie end-to-end w trybie interaktywnym, gdy dokumentacja podaje progi w sekundach #cite(<youtube_latency>) #cite(<aws_mediapackage_hls>); rozdzielenie kanału obrazu od czatu i powiadomień #cite(<youtube_live_chat>) #cite(<twitch_chat>); skalowanie sesji WebSocket i propagację zdarzeń między instancjami #cite(<redis_docs>); obciążenie ścieżki API i kolejek przy zadaniach asynchronicznych #cite(<rabbitmq_docs>); oraz możliwość zebrania mierników operacyjnych #cite(<prometheus_overview>).
+
+Zestawienia w #tab(<platformy-infra>) i #tab(<chmury-uslugi>) pokazują, które z tych wymiarów są publicznie udokumentowane u konkurentów i dostawców chmury. Na tej podstawie w rozdziale „Cel i zakres pracy” wyznaczono własne progi i mierniki. Przed testami własnego systemu należy znać kryteria stosowane u innych, a nie wybierać je ad hoc po zebraniu wyników.
+
 == Wnioski z analizy konkurencji
 Przegląd rozwiązań rynkowych wskazuje, że skuteczne platformy nie opierają się na jednym uniwersalnym mechanizmie, lecz łączą wyspecjalizowane komponenty: protokoły niskiej latencji dla transmisji na żywo, adaptacyjną dystrybucję HTTP dla skali masowej, odrębne kanały komunikacji społecznościowej, warstwę danych w pamięci operacyjnej dla stanu ulotnego, broker kolejek dla zadań ciężkich oraz magazyn obiektowy dla zasobów binarnych.
 

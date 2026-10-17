@@ -1,6 +1,12 @@
-# Zasady redakcyjne WI ANS
+# Zasady redakcyjne WI ANS — praca inżynierska
 
-Źródło: „Zasady pisania prac dyplomowych na Wydziale Nauk Inżynieryjnych ANS w Nowym Sączu” (2026) oraz wzór strony tytułowej. Skład realizuje szablon; tego pliku nie wklejaj do pracy.
+Źródło: „Zasady pisania prac dyplomowych na Wydziale Nauk Inżynieryjnych ANS w Nowym Sączu” (2026), rozdz. IV.2 i V.2, oraz wzór strony tytułowej (załącznik B). Skład realizuje szablon; tego pliku nie wklejaj do pracy.
+
+## Struktura treści (inżynierska)
+
+Obowiązkowe w każdej pracy dyplomowej WI: wstęp, rozdział „Cel i zakres pracy”, podsumowanie, bibliografia. Rozdział „Metodyka badań” jest obowiązkowy tylko w pracy **badawczej** (typowa magisterska). W pracy inżynierskiej zamiast tego stosuje się uzasadnienie metod, technik i narzędzi projektu (katalog `03-metodyka/`, tytuł np. „Metodyka projektu i weryfikacji”).
+
+Kolejność w `main.typ`: `00-wstep` → `01-przeglad` → `02-cel-i-zakres` → `03-metodyka` → `04-projekt-i-wyniki` → `05-podsumowanie` → bibliografia i spisy → `06-zalaczniki`. Plik główny rozdziału ma taką samą nazwę jak katalog, np. `00-wstep/00-wstep.typ`. Wstęp: `#import` i `#wstep[tekst]` ze [`szablon/template.typ`](../../szablon/template.typ). Geneza pracy (IV.2) należy do rozdziału „Cel i zakres pracy”, nie do wstępu. Rozdział projektowy: tytuł np. „Projekt, implementacja i weryfikacja”.
 
 ## Strona tytułowa
 

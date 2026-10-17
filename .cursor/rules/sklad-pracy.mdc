@@ -1,5 +1,5 @@
 ---
-description: Skład pracy w szablonie Typst — rozdziały, rysunki, tabele, bibliografia
+description: Skład pracy inżynierskiej w szablonie Typst — rozdziały, rysunki, tabele, bibliografia
 globs: "**/*.typ,**/literatura.bib"
 alwaysApply: false
 ---
@@ -8,7 +8,10 @@ alwaysApply: false
 
 Nie zmieniaj marginesów, czcionek, interlinii ani numeracji stron. To jest w `szablon/template.typ`.
 
-- Rozdział: `praca/<nazwa>/rozdzial.typ` i `sources/`. Dopisz `#include` w `main.typ`.
+- Kolejność katalogów w `main.typ`: `00-wstep` → `01-przeglad` → `02-cel-i-zakres` → `03-metodyka` → `04-projekt-i-wyniki` → `05-podsumowanie` → bibliografia → spisy → `06-zalaczniki`.
+- Rozdział: `praca/<NN-nazwa>/<NN-nazwa>.typ` i `sources/` (np. `00-wstep/00-wstep.typ`). Dopisz `#include` w `main.typ`.
+- Załącznik: `praca/06-zalaczniki/<NN-nazwa>/<NN-nazwa>.typ`.
+- Wstęp: `#import "/szablon/template.typ": wstep` oraz `#wstep[tekst wstępu]`.
 - W pliku rozdziału: `#import "/szablon/template.typ": rysunek, tabela, rys, tab, wzor, cytat`.
 - Obraz: `#rysunek(image("sources/plik.png", width: 12cm), [Tytuł]) <etykieta>`. Ścieżka od pliku rozdziału. W tekście: `na #rys(<etykieta>)`.
 - Tabela: `#tabela([Tytuł bez kropki], table(...)) <etykieta>`, w tekście `w #tab(<etykieta>)`. Bez pogrubień w komórkach.
