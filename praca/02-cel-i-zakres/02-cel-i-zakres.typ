@@ -1,4 +1,8 @@
 #import "/szablon/template.typ": tabela, tab
+#import "/praca/parametry.typ": (
+  profil-docelowy-z-rozkladem, rampa-etapy-tekst, tabela-zalozenie-sesje, tabela-zalozenie-opoznienie,
+  opoznienie-obrazu-max-s, zrodlo-tabela-mierniki,
+)
 
 = Cel i zakres pracy
 Na podstawie analizy rozwiązań rynkowych oraz technologii wykorzystywanych we współczesnych platformach streamingowych określono cel pracy i zakres działań projektowo-implementacyjnych. W rozdziale doprecyzowano, jakie elementy systemu zostaną zrealizowane, jakie ograniczenia przyjęto oraz według jakich kryteriów będzie oceniany końcowy rezultat.
@@ -68,7 +72,7 @@ W celu potwierdzenia poprawności działania systemu przewidziano realizację te
 
 W zakresie testów funkcjonalnych uwzględnione zostaną między innymi proces logowania, uruchamianie transmisji, odbiór obrazu i dźwięku, działanie czatu, publikacja reakcji oraz zapis materiału VOD. Testy wydajnościowe obejmą analizę czasu odpowiedzi API, opóźnień dostarczania zdarzeń czasu rzeczywistego oraz stabilności przy zwiększonej liczbie użytkowników. Szeregi tych mierników pobiera Prometheus, a Grafana pokazuje je w panelach testu obciążenia.
 
-Jako założenie projektowe do uzgodnienia z promotorem przyjęto minimalny skład obciążenia w teście wydajnościowym: co najmniej trzech jednoczesnych nadawców transmisji na żywo oraz co najmniej trzydziestu jednoczesnych odbiorców łącznie, rozłożonych na te transmisje. Drugi profil obciążenia zwiększa liczbę odbiorców przy tej samej liczbie nadawców. Wartości wybrane są poniżej skali komercyjnych platform, lecz wystarczają do wstępnej oceny skalowania warstwy aplikacyjnej i kanałów czasu rzeczywistego w ramach zakresu pracy. Szczegóły scenariuszy i powtarzalności pomiaru opisano w rozdziale metodyki.
+Przyjęto profil docelowy testu wydajnościowego mający wykazać skalowanie platformy: #profil-docelowy-z-rozkladem. Drugi profil obciążenia polega na stopniowym dochodzeniu do tego składu, #rampa-etapy-tekst, tak aby na wykresach mierników było widać zachowanie systemu przy narastającym obciążeniu. Liczby są poniżej skali komercyjnych serwisów, lecz wystarczają do oceny skalowania warstwy aplikacyjnej, sesji WebSocket, SSE i API; ścieżka obrazu pozostaje w usługach zarządzanych opisanych w zakresie technologicznym. Konfigurację środowiska testowego i generatorów ruchu dobiera się tak, aby profil docelowy był osiągalny w warunkach laboratoryjnych. Szczegóły scenariuszy opisano w rozdziale metodyki.
 
 == Zakres poza pracą
 Poza celem pozostają GitOps, Terraform, Loki i Jenkins. GitOps utrzymuje deklarowany stan środowiska przez automatyczne pobieranie wersji z repozytorium #cite(<opengitops>). Terraform opisuje infrastrukturę jako kod, a Jenkins automatyzuje potok wydań #cite(<terraform_intro>) #cite(<jenkins_intro>). Loki zostaje przy logach. Te cztery pozycje nie rozstrzygają o spełnieniu celu. Poza zakresem zostają też budowa globalnej infrastruktury CDN (ang. _Content Delivery Network_), wdrożenie komercyjnych mechanizmów monetyzacji, przygotowanie natywnych aplikacji mobilnych oraz formalna certyfikacja bezpieczeństwa systemu.
@@ -92,7 +96,7 @@ Wymagania funkcjonalne wynikają z zakresu opisanego powyżej i dotyczą obserwo
 == Wymagania niefunkcjonalne
 Wymagania niefunkcjonalne określają warunki, pod którymi funkcje z poprzedniego podrozdziału uznaje się za spełnione:
 
-- opóźnienie obrazu w trybie interaktywnym ma mieścić się w paśmie, które publiczne platformy opisują jako niskie; jako założenie projektowe przyjmuje się próg 10 s od zdarzenia przed kamerą do obrazu u widza, zgodny z trybem niskiego opóźnienia YouTube, w którym większość widzów doświadcza opóźnienia mniejszego niż 10 s #cite(<youtube_latency>);
+- opóźnienie obrazu w trybie interaktywnym ma mieścić się w paśmie, które publiczne platformy opisują jako niskie; jako założenie projektowe przyjmuje się próg #opoznienie-obrazu-max-s s od zdarzenia przed kamerą do obrazu u widza, zgodny z trybem niskiego opóźnienia YouTube, w którym większość widzów doświadcza opóźnienia mniejszego niż #opoznienie-obrazu-max-s s #cite(<youtube_latency>);
 - warstwa aplikacyjna i warstwa zdarzeń mają dać się powielić na więcej niż jedną instancję bez przywiązania odbiorcy czatu do jednego węzła;
 - przetworzenie nagrania i obrazu użytkownika odbywa się poza ścieżką krytyczną żądania HTTP, przez kolejkę zadań;
 - ponowienie tego samego żądania zapisu nie tworzy drugiego skutku; żądanie niesie identyfikator pozwalający połączyć wpisy dziennika jednej operacji;
@@ -111,14 +115,14 @@ Spełnienie celu stwierdza się przez sprawdzenie wymagań funkcjonalnych oraz p
     align: left,
     [Miernik], [Co rozstrzyga], [Założenie],
     [Czas do pierwszej klatki], [odbiór transmisji], [do wyznaczenia w badaniu],
-    [Opóźnienie obrazu od kamery do widza], [tryb interaktywny], [nie więcej niż 10 s],
+    [Opóźnienie obrazu od kamery do widza], [tryb interaktywny], tabela-zalozenie-opoznienie,
     [Opóźnienie dostarczenia zdarzenia czatu], [interakcja społecznościowa], [do wyznaczenia w badaniu],
     [Percentyl 95. czasu odpowiedzi API], [ścieżka krytyczna żądań], [do wyznaczenia w badaniu],
     [Odsetek nieudanych odtworzeń], [stabilność odbioru], [do wyznaczenia w badaniu],
-    [Liczba równoległych sesji utrzymanych w teście], [skalowanie], [co najmniej dwa profile obciążenia],
+    [Liczba równoległych sesji utrzymanych w teście], [skalowanie], tabela-zalozenie-sesje,
     [Skutek ponowionego żądania zapisu], [idempotentność], [jeden skutek przy tym samym kluczu],
   ),
-  zrodlo: [opracowanie własne; próg 10 s jako założenie na podstawie opisu trybu niskiego opóźnienia YouTube],
+  zrodlo: zrodlo-tabela-mierniki,
 ) <mierniki-celu>
 
 Test funkcjonalny potwierdza kolejne wiersze wymagań funkcjonalnych. Test obciążenia zapisuje mierniki opóźnienia, czasu odpowiedzi i liczby sesji zebrane przez Prometheus i pokazane w Grafanie. Wyników tych testów ten rozdział nie podaje. Tak określony cel i zakres wyznaczają ramy dalszych rozdziałów, w których przedstawione zostaną metodyka, implementacja oraz rezultaty badań.

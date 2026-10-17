@@ -1,0 +1,16 @@
+# Parametry pracy — edytuj tutaj; rozdziały .typ importują wartości z parametry.typ.
+# rampa: kolejne etapy testu obciążeniowego (nadawcy = transmisje na żywo, odbiorcy łącznie).
+
+test_obciazenia:
+  nadawcy_docelowi: 30
+  odbiorcy_docelowi: 300
+  rampa:
+    - nadawcy: 10
+      odbiorcy: 100
+    - nadawcy: 20
+      odbiorcy: 200
+    - nadawcy: 30
+      odbiorcy: 300
+
+kryteria:
+  opoznienie_obrazu_max_s: 10

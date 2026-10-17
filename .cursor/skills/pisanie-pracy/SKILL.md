@@ -44,7 +44,7 @@ Rozdział „Metodyka badań” z poradnika jest obowiązkowy w pracy **badawcze
 
 Treść merytoryczna inżynierska: geneza w rozdziale celu, przegląd metod i narzędzi, opis projektu i implementacji z wkładem własnym, prezentacja działania rozwiązania, krytyczne podsumowanie.
 
-Kryteria oceny systemu należy najpierw zbadać u innych (przegląd, dokumentacja platform), następnie wyznaczyć progi w „Cel i zakres pracy”, opisać pomiar w metodyce i zestawić wyniki w rozdziale projektowym. Przy testach obciążeniowych przyjąć i uzasadnić minimalną liczbę jednoczesnych nadawców i odbiorców (założenie projektowe do uzgodnienia z promotorem).
+Kryteria oceny systemu należy najpierw zbadać u innych (przegląd, dokumentacja platform), następnie wyznaczyć progi w „Cel i zakres pracy”, opisać pomiar w metodyce i zestawić wyniki w rozdziale projektowym. Przy testach obciążeniowych liczby (nadawcy, odbiorcy, rampa, progi) ustaw w `praca/parametry.yaml` i odwołuj się przez `praca/parametry.typ`, nie wpisuj ich ręcznie w rozdziałach.
 
 ## Język
 

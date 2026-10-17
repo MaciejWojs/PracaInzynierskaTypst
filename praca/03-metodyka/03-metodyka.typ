@@ -1,3 +1,8 @@
+#import "/praca/parametry.typ": (
+  profil-docelowy-krotko, profil-skrot, rampa-skrot-slasha,
+  odbiorcy-na-transmisje, nadawcy-docelowi, odbiorcy-docelowi,
+)
+
 = Metodyka projektu i weryfikacji
 W rozdziale uzasadniono wybór metod, technik i narzędzi użytych do realizacji celu pracy. Opis ma umożliwić odtworzenie kroków projektowych, implementacyjnych i weryfikacyjnych przez inną osobę.
 
@@ -10,4 +15,8 @@ Kryteria oceny systemu są takie same jak w rozdziale „Cel i zakres pracy”: 
 == Scenariusze testów funkcjonalnych i obciążeniowych
 Testy funkcjonalne obejmują scenariusze użytkownika wymienione w zakresie testów rozdziału celu: logowanie, start i koniec transmisji, odbiór obrazu i dźwięku, czat, reakcje, powiadomienia oraz zapis VOD. Każdy scenariusz wykonuje się według tej samej kolejności kroków, aby wynik dało się powtórzyć.
 
-Testy obciążeniowe wykonuje się przy założeniu projektowym, uzgodnionym z promotorem: co najmniej trzech jednoczesnych nadawców prowadzących transmisję na żywo oraz co najmniej trzydziestu jednoczesnych odbiorców łącznie, rozłożonych na te transmisje. Drugi profil obciążenia podnosi liczbę odbiorców przy tej samej liczbie nadawców, zgodnie z wierszem tabeli mierników o dwóch profilach obciążenia. Generatory ruchu symulują żądania API, połączenia WebSocket, SSE oraz odtwarzanie strumieni. Przed uruchomieniem testu rejestruje się wersję oprogramowania, konfigurację usług i parametry generatora, aby zestawienie wyników w rozdziale projektowym było odtwarzalne.
+Testy obciążeniowe mają potwierdzić skalowanie przy profilu docelowym z rozdziału celu: #profil-docelowy-krotko. W jednym przebiegu stosuje się rampę etapową (#rampa-skrot-slasha: nadawcy/odbiorcy), aby zestawić mierniki na kolejnych poziomach obciążenia. Odbiorców rozdziela się równomiernie między aktywne transmisje, zgodnie z założeniem około #odbiorcy-na-transmisje widzów na stream.
+
+Żeby profil #profil-skrot był osiągalny w środowisku testowym, stosuje się symulację klientów (żądania HTTP, WebSocket, SSE oraz odtwarzanie adresów wyjściowych z warstwy multimedialnej) zamiast wyłącznie ręcznej obsługi interfejsu. Liczbę replik usługi aplikacyjnej, parametry Redis lub Valkey oraz limity ALB dobiera się przed testem na podstawie próbnych przebiegów; ingest i dystrybucję obrazu pozostawia się usługom AWS z zakresu pracy, aby obciążenie CPU warstwy własnej nie szło w transkodowanie. Jeżeli któryś etap rampy nie osiągnie założonej liczby sesji (#nadawcy-docelowi nadawców, #odbiorcy-docelowi odbiorców na profilu docelowym), rejestruje się maksymalny osiągnięty poziom i przyczynę (limit zasobów, limit połączeń, błąd generatora), bez zawyżania wyniku.
+
+Przed uruchomieniem testu rejestruje się wersję oprogramowania, konfigurację usług i parametry generatora, aby zestawienie wyników w rozdziale projektowym było odtwarzalne.

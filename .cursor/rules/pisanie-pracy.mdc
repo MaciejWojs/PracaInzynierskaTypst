@@ -10,7 +10,7 @@ Przy pisaniu lub poprawie treści stosuj skill `pisanie-pracy`. Szczegóły cyto
 - Bezosobowo, po polsku, bez publicystyki i żargonu. Skrót rozwinięty przy pierwszym użyciu.
 - Praca inżynierska (IV.2): geneza w „Cel i zakres pracy”, przegląd rozwiązań, implementacja z wkładem własnym, działanie systemu, krytyczne podsumowanie z opisem tego, co autor zrobił, uproszczonym opisem systemu i wytycznymi na przyszłość.
 - Wstęp: obszar i problemy, bez celu i bez szczegółowej genezy. Obowiązkowe: „Cel i zakres pracy” oraz „Podsumowanie”. „Metodyka badań” magisterska — tylko w pracy badawczej; w inżynierskiej metodyka projektu i narzędzi.
-- Kryteria oceny: najpierw u innych (przegląd), potem progi w celu, pomiar w metodyce, wyniki w rozdziale projektowym; minimalna liczba nadawców i odbiorców w testach — uzasadnione założenie.
+- Kryteria oceny: najpierw u innych (przegląd), potem progi w celu, pomiar w metodyce, wyniki w rozdziale projektowym; liczby obciążenia i progi w `praca/parametry.yaml`.
 - Cytowania weryfikuj ręcznie (bibliografia ↔ tekst ↔ treść źródła; WWW z datą dostępu).
 - Najwyżej trzy stopnie numeracji (`1.`, `1.1.`, `1.1.1.` w szablonie). Zakaz jednego podrozdziału. Bez kropki na końcu tytułu rozdziału.
 - Cytowanie harwardzkie w tekście: `(Nowak, 2014)`, cytat ze stroną `(Nowak, 2014, s. 34)`. Przypis dolny nie służy do literatury.

@@ -19,3 +19,4 @@ Nie zmieniaj marginesów, czcionek, interlinii ani numeracji stron. To jest w `s
 - Długi cytat: `#cytat[tekst]`, odsyłacz w `odsylacz:`.
 - Pozycja literatury: wpis w `praca/literatura.bib` i `#cite(<klucz>)`. Strony internetowe osobno, w `praca/netografia.bib`. Styl jest w `szablon/style/ans-harvard.csl`.
 - Dane strony tytułowej tylko w `praca.with` w `main.typ`.
+- Liczby testów obciążenia i progi kryteriów: edytuj `praca/parametry.yaml`; w rozdziałach `#import "/praca/parametry.typ": …` (nie wpisuj tych wartości ręcznie w tekście).

@@ -10,6 +10,7 @@
 // Obraz z rozdziału: #rysunek(image("sources/nazwa.png", width: 12cm), [Tytuł]) <etykieta>
 // Ścieżka sources/ jest liczona od pliku rozdziału, nie od main.typ.
 // Szablon składu jest w szablon/, bibliografia w praca/literatura.bib.
+// Liczby testów obciążenia i progi kryteriów: praca/parametry.yaml (przez import w rozdziałach).
 // Streszczenie i słowa kluczowe trafiają do ASAP, nie do tego pliku.
 // Egzemplarz archiwalny drukuje się dwustronnie, bez oprawy.
 
