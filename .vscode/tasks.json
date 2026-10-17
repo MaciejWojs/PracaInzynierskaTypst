@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "cleanup ",
-            "command": "rm main.pdf 2>/dev/null; find . -name '*.pdf' -print -exec rm {} +",
+            "command": "rm main.pdf 2>/dev/null; find . -name '*.pdf' -not -path '*/instrukcje/*' -print -exec rm {} +; ",
             "type": "shell",
             "presentation": {
                 "reveal": "always"
