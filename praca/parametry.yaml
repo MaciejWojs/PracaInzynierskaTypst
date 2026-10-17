@@ -1,6 +1,13 @@
 # Parametry pracy — edytuj tutaj; rozdziały .typ importują wartości z parametry.typ.
-# rampa: kolejne etapy testu obciążeniowego (nadawcy = transmisje na żywo, odbiorcy łącznie).
+# Kompilacja przerwie się, jeśli profil obciążenia przekroczy limity AWS z zapasem.
 
+# Usługa obrazu użyta w testach skalowania: ivs albo medialive.
+usluga_obrazu: ivs
+
+# Maksymalny udział limitu AWS, jaki wolno wykorzystać w teście (0,5 = 50%).
+zapas: 0.5
+
+# nadawcy = transmisje na żywo jednocześnie, odbiorcy = widoki łącznie.
 test_obciazenia:
   nadawcy_docelowi: 30
   odbiorcy_docelowi: 300
@@ -12,5 +19,24 @@ test_obciazenia:
     - nadawcy: 30
       odbiorcy: 300
 
+# Domyślne limity AWS (dokumentacja, dostęp 17.10.2026).
+# Przed testami porównaj z konsolą Service Quotas konta i regionu docelowego.
+limity_aws:
+  ivs_wspolbiezne_strumienie: 100     # Amazon IVS Low-Latency, na region
+  ivs_wspolbiezne_widoki: 15000       # Amazon IVS Low-Latency, na region
+  medialive_kanaly: 5                 # AWS Elemental MediaLive, na region
+  apigw_przepustowosc_rps: 10000      # API Gateway, konto/region (2500 w części regionów)
+
+# Progi kryteriów. zrodlo: "literatura" = opublikowane przez platformy (rozdz. przeglądu);
+# "zalozenie" = założenie własne autora do akceptacji promotora.
 kryteria:
   opoznienie_obrazu_max_s: 10
+  opoznienie_obrazu_zrodlo: literatura
+  opoznienie_czatu_p95_max_ms: 1000
+  opoznienie_czatu_zrodlo: zalozenie
+  czas_odpowiedzi_api_p95_max_ms: 500
+  czas_odpowiedzi_api_zrodlo: zalozenie
+  odsetek_nieudanych_odtworzen_max_proc: 1
+  odsetek_nieudanych_odtworzen_zrodlo: zalozenie
+  czas_do_pierwszej_klatki_max_s: 5
+  czas_do_pierwszej_klatki_zrodlo: zalozenie

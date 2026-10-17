@@ -38,6 +38,8 @@ Rozdział „Metodyka badań” z poradnika jest obowiązkowy w pracy **badawcze
 - **Wstęp** bez numeru rozdziału.
 - **Cel i zakres pracy** oraz **Podsumowanie** są obowiązkowe.
 - Numeracja arabska do trzech stopni (`1.`, `1.1.`, `1.1.1.` w szablonie). Bez kropki na końcu **tytułu** rozdziału.
+- „Cel i zakres pracy” opisuje, **co** ma zostać osiągnięte (cel, granice, wymagania, kryteria). Jest rozdziałem krótkim. **Jak** to zrobiono (architektura, wybór usług, implementacja) należy do rozdziału projektowego.
+- Rozdziały nie opisują jako wykonanych działań, których jeszcze nie wykonano (testy, pomiary, implementacja). Do czasu wykonania stosuj formę planowaną.
 - Zakaz jednego podrozdziału w rozdziale. Albo co najmniej dwa, albo żaden.
 - Rozdział ma mieć kilka stron i nie może składać się z samych rysunków, tabel albo wzorów.
 - W podsumowaniu wprost zapisz, co autor zrobił, ocenę realizacji celu, uproszczony opis zaprojektowanego systemu oraz wytyczne do dalszych działań (IV.2, praca projektowa). Wnioski tylko z treści pracy.
