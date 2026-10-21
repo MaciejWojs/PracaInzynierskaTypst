@@ -1,0 +1,8 @@
+{
+  "name": "PracaInzynierskaTypst",
+  "main_doc": "main.typ",
+  "engine": "typst",
+  "typst": {
+    "version": "0.15.1"
+  }
+}
