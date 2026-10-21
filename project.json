@@ -1,7 +1,15 @@
 {
-  "name": "PracaInzynierskaTypst",
-  "main_doc": "main.typ",
+  "checkpoints": {
+    "mode": "engine_dependencies"
+  },
+  "color": "",
   "engine": "typst",
+  "exports": [],
+  "forked_from": null,
+  "hidden": false,
+  "kind": "",
+  "main_doc": "main.typ",
+  "name": "PracaInzynierskaTypst",
   "typst": {
     "version": "0.15.1"
   }
